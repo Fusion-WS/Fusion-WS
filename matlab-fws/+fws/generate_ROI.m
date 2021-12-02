@@ -1,18 +1,10 @@
 function obj = generate_ROI(P,varargin)
-% FWS.GENERATE_ROI: One line description of what the function or script performs
-%
 %   ______         _         __          _______ 
 %  |  ____|       (_)        \ \        / / ____|
 %  | |__ _   _ ___ _  ___  _ _\ \  /\  / / (___  
 %  |  __| | | / __| |/ _ \| '_ \ \/  \/ / \___ \   :- Functional and Structural
 %  | |  | |_| \__ \ | (_) | | | \  /\  /  ____) |     Integration of Neuroimages,
 %  |_|   \__,_|___/_|\___/|_| |_|\/  \/  |_____/      Watershed.
-%
-% AUTHOR:  Richard Daws
-%  EMAIL:  r.daws@imperial.ac.uk
-%  AFFILIATION:  Imperial College London
-%  VERSION:  0.0 CREATED: 01-Jul-2020 16:02:57
-%  0.1 UPDATED: 11-Jul-2020 16:02:57 (Eyal Soreq)
 %
 % INPUTS:
 %    P - A full filepath to a NifTi (.nii or .nii.gz).
@@ -32,16 +24,15 @@ function obj = generate_ROI(P,varargin)
 %           'merge'  - Neighbouring clusters have a volume below the
 %                      'merge' threshold are combined into one cluster.
 %
-%
 % EXAMPLE:
-%   obj = fws.generate_ROI('demo') - Runs a demo with an fMRI activation
-%                                    map from Fedorenko et al.(2013).
+%   1. obj = fws.generate_ROI('demo') - Runs a demo with an fMRI activation
+%                                       map from Fedorenko et al.(2013).
 %
-%   P='/path/to/3d/nifti/file/;
-%   obj = fws.generate_ROI(P, 'radius', 2) - Run FWS with a voxel radius of
-%                                            2 voxels.
-%   obj = fws.generate_ROI(P, 'merge',100) - Run FWS with a merge volume of
-%                                            100 voxels. 
+%   2. P='/path/to/3d/nifti/file/;
+%      obj = fws.generate_ROI(P, 'radius', 2) - Run FWS with a voxel radius 
+%                                               of 2 voxels.
+%   3. obj = fws.generate_ROI(P, 'merge',100) - Run FWS with a merge volume 
+%                                               of 100 voxels. 
 %
 % DEPENDENCIES:
 %

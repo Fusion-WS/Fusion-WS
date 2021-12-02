@@ -1,13 +1,12 @@
 function obj = generate_ROI(P,varargin)
 % FWS.GENERATE_ROI: One line description of what the function or script performs
-%                           
-%   __           _             
-%  / _|         (_)            
-% | |_ _   _ ___ _  ___  _ __    
-% |  _| | | / __| |/ _ \| `_ \    :- Functional and Structural 
-% | | | |_| \__ \ | (_) | | | |      Integration of Neuroimages
-% |_|  \__,_|___/_|\___/|_| |_|
 %
+%    __           _              __          _______ 
+%   / _|         (_)             \ \        / / ____|
+%  | |_ _   _ ___ _  ___  _ __    \ \  /\  / / (___  
+%  |  _| | | / __| |/ _ \| '_ \    \ \/  \/ / \___ \   :- Functional and Structural
+%  | | | |_| \__ \ | (_) | | | |    \  /\  /  ____) |     Integration of Neuroimages,
+%  |_|  \__,_|___/_|\___/|_| |_|     \/  \/  |_____/      Watershed.
 %
 % AUTHOR:  Richard Daws
 %  EMAIL:  r.daws@imperial.ac.uk
@@ -16,20 +15,34 @@ function obj = generate_ROI(P,varargin)
 %  0.1 UPDATED: 11-Jul-2020 16:02:57 (Eyal Soreq)
 %
 % INPUTS:
-%    P - A full filepath to a NifTi (.nii or .nii.gz) that has been 
-%        registered to MNI space
+%    P - A full filepath to a NifTi (.nii or .nii.gz).
+%        The image should be registered to MNI space to utilise
+%        the automated ROI labelling. 
 %    	 
 % OUTPUT:
-%   obj - A struct object containing 
+%   obj - A struct object that includes the following fields:
+%
+%           'label'  - The ROI map with unique integers (same size as input 
+%                      volume).
+%           'table'  - A table of ROI properties. 
+%           'filter' - Minimum voxel volume of connected components
+%                      retained for watershed clustering.
+%           'radius' - Neighbourhood 'flooding' radius used during 
+%                      watershed clustering. 
+%           'merge'  - Neighbouring clusters have a volume below the
+%                      'merge' threshold are combined into one cluster.
+%
 %
 % EXAMPLE:
+%   obj = fws.generate_ROI('demo') - Runs a demo with an fMRI activation
+%                                    map from Fedorenko et al.(2013).
+%
 %   P='/path/to/3d/nifti/file/;
 %   obj = fws.generate_ROI(P, 'radius', 2) - Run FWS with a voxel radius of
-%                                            2
-%
-%   obj = fws.generate_ROI('demo') - Runs FWS on a two-tailed unthresholded 
-%                                    activation map (Fedorenko et al.,
-%                                    2013).
+%                                            2 voxels.
+%   obj = fws.generate_ROI(P, 'merge',100) - Run FWS with a merge volume of
+%                                            100 voxels. 
+
 %
 % DEPENDENCIES:
 %
@@ -52,12 +65,12 @@ function obj = generate_ROI(P,varargin)
 %
 %% Welcome logo
 clc
-disp('   __           _             ');
-disp('  / _|         (_)            ');
-disp(' | |_ _   _ ___ _  ___  _ __   ');
-disp(' |  _| | | / __| |/ _ \| `_ \    :- Functional and Structural ');
-disp(' | | | |_| \__ \ | (_) | | | |      Integration of Neuroimages');
-disp(' |_|  \__,_|___/_|\___/|_| |_|');
+disp('     __           _              __          _______ ');
+disp('    / _|         (_)             \ \        / / ____|');
+disp('   | |_ _   _ ___ _  ___  _ __    \ \  /\  / / (___  ');
+disp('   |  _| | | / __| |/ _ \| `_ \    \ \/  \/ / \___ \   :- Functional and Structural');
+disp('   | | | |_| \__ \ | (_) | | | |    \  /\  /  ____) |     Integration of Neuroimages,');
+disp('   |_|  \__,_|___/_|\___/|_| |_|     \/  \/  |_____/      Watershed.');
 fprintf('\n Generating ROIs in present working directory:\n\t%s\n',pwd)
 
 %% DEFAULTS & INPUT HANDLING 
@@ -67,8 +80,8 @@ tc=tic;
 % Load nifti
 if any(strcmp(P,{'demo','demo_unthr'}))
     
-    src = strsplit(which(['fws.' mfilename]), 'Fusion-Watershed');
-    tmpP = [src{1} 'Fusion-Watershed' filesep 'data' filesep 'DMN_MD_Fedorenko.nii.gz'];
+    src = strsplit(which(['fws.' mfilename]), 'matlab-fws');
+    tmpP = [src{1} filesep 'data' filesep 'DMN_MD_Fedorenko.nii.gz'];
 
     fprintf('\n Loading image:\n\t%s\n',tmpP);
     [V,G,hdr] = load.vol(tmpP);
@@ -100,6 +113,7 @@ obj = fws.defaults(obj, varargin);
 
 if ~obj.output
     D = new.folder([],pwd,{'output'});
+    obj.output = D.output;
 end    
 
 % Clear data that is now in obj
@@ -177,21 +191,23 @@ end
 
 %% WATERSHED
 
+if obj.verbose; fprintf('\n Parameters:\n\t filter: %s\n\t radius: %s\n\t merge : %s\n', num2str(obj.filter), num2str(obj.radius), num2str(obj.merge));end
+
 if obj.K.two_tailed
     % Seprate watershed calls on positive and negative volumes
-    if obj.verbose; fprintf('\n Segmenting positives\t%s',''); end
+    if obj.verbose; fprintf('\n Segmenting positives:\t%s',''); end
     pL = fws.watershed(obj.pV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Pos watershed
     
-    if obj.verbose; fprintf('\n Segmenting negatives\t%s',''); end
+    if obj.verbose; fprintf('\n Segmenting negatives:\t%s',''); end
     nL = fws.watershed(obj.nV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Neg watershed    
            
     % combine labels
-    if obj.verbose; fprintf('\n Combining labels%s',''); end
+    if obj.verbose; fprintf('\n Combining labels:%s',''); end
     obj.label = fws.combine_labels(nL, pL);
     obj.pL = obj.label.*(pL>0);
     obj.nL = obj.label.*(nL>0);
 else % Binary or one_tailed
-    if obj.verbose; fprintf('\n Segmenting map \t\t%s',''); end
+    if obj.verbose; fprintf('\n Segmenting map: \t\t%s',''); end
     obj.label = fws.watershed(obj.volume,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); 
 end
 

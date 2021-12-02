@@ -210,11 +210,6 @@ rotate3d(AX{4},'on');
         end
     end
 
-
-
-
-
-
 fg.Visible = 'on';
 end
 

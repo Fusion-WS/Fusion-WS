@@ -66,10 +66,9 @@ end
 
 % Interpolate atlas(es) to match label grid
 if obj.verbose
-    fprintf(['\n Interpolating %s atlases' repmat(' ',1,10)],numel(obj.atlas))
+    fprintf(['\n Interpolating %s atlases:' repmat(' ',1,9)],numel(obj.atlas))
     tic;
 end
-
 
 for ii = 1:numel(obj.atlas)
     Atlas.(obj.atlas{ii}).Lr = fws.interpolator('source_volume',Atlas.(obj.atlas{ii}).L,'source_grid',Atlas.(obj.atlas{ii}).G,'target_volume',obj.label,'target_grid',obj.grid);
@@ -86,7 +85,8 @@ end
 id = unique(obj.label(~isnan(obj.label))); 
 
 if obj.verbose
-   fprintf('\n Assigning labels to %s ROIs\t', num2str(numel(id(2:end)))) 
+    nROI = num2str(numel(id(2:end)));
+    fprintf(['\n Assigning labels to %s ROIs:' repmat(' ',1,7)], nROI) 
 end
 
 
@@ -155,15 +155,21 @@ for ii=id(2:end)' % Skipping 0's
 
     % Store ROI labels in T
     T = [T;tmp];
-    
+        
+    % progress report
     if obj.verbose
-        fprintf('*');
-        if ~mod(ii,80); fprintf(['\n' repmat(' ',1,32)]);end 
+        if ii==1 
+            progress_str = [num2str(ii) '/' nROI]; 
+        elseif ii>1
+            fprintf(repmat('\b', 1, numel(progress_str)));
+            progress_str = [num2str(ii) '/' nROI];         
+            fprintf(progress_str);
+        end
     end
 end
 
 if obj.verbose
-    fprintf(['\n' repmat(' ',1,32) 'Completed in %s seconds\n'],num2str(toc(tc)))
+    fprintf(' Completed in %s seconds\n',num2str(toc(tc)))
 end
 
 end

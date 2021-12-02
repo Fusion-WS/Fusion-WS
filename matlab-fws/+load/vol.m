@@ -47,6 +47,8 @@ function varargout = vol(fn,cifti)
 %------------- BEGIN CODE --------------
 %
 
+% Input check. Throw error is filepath does not point an exsiting file
+if exist(fn,'file')~=2; error(['Filepath does not exist: ' fn]); end
 
 hdr = niftiinfo(fn);
 varargout = cell(1,nargout);

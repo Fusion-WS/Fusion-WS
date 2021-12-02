@@ -1,10 +1,10 @@
 function obj = generate_ROI(P,varargin)
-%   ______         _         __          _______ 
-%  |  ____|       (_)        \ \        / / ____|
-%  | |__ _   _ ___ _  ___  _ _\ \  /\  / / (___  
-%  |  __| | | / __| |/ _ \| '_ \ \/  \/ / \___ \   :- Functional and Structural
-%  | |  | |_| \__ \ | (_) | | | \  /\  /  ____) |     Integration of Neuroimages,
-%  |_|   \__,_|___/_|\___/|_| |_|\/  \/  |_____/      Watershed.
+% ______         _         __          _______ 
+%|  ____|       (_)        \ \        / / ____|
+%| |__ _   _ ___ _  ___  _ _\ \  /\  / / (___  
+%|  __| | | / __| |/ _ \| '_ \ \/  \/ / \___ \   :- Functional and Structural
+%| |  | |_| \__ \ | (_) | | | \  /\  /  ____) |     Integration of Neuroimages,
+%|_|   \__,_|___/_|\___/|_| |_|\/  \/  |_____/      Watershed.
 %
 % INPUTS:
 %    P - A full filepath to a NifTi (.nii or .nii.gz).

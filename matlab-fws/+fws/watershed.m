@@ -78,7 +78,7 @@ L(Y==-inf)=nan;
 
 tC=toc(tc);
 if obj.verbose
-    fprintf(' Completed in %s seconds\n',num2str(tC))
+    fprintf(' Completed in %s seconds',num2str(tC))
 end
 
 %------------- END OF CODE --------------

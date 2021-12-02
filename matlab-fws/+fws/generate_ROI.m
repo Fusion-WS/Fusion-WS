@@ -105,7 +105,7 @@ end
 obj = struct('path',P,'input_volume',double(V),'volume',double(V),'grid',G,...
              'header',hdr,'radius',1,'merge',100,'filter',300,'verbose',true,...
              'tail',false,'threshold_method','iqr','output',false,...
-             'threshold_value',0.85,'threshold_plot',false,...
+             'threshold_value',0.90,'threshold_plot',false,...
               'smooth',false,'plot',true,'export',true);
          
 % Parse user inputs          
@@ -202,14 +202,14 @@ if obj.verbose; fprintf('\n Parameters:\n\t filter: %s\n\t radius: %s\n\t merge 
 
 if obj.K.two_tailed % Seprate watershed calls on positive and negative volumes
     % positives
-    if obj.verbose; fprintf('\n Segmenting positives:\t%s',''); end
+    if obj.verbose; fprintf('\n Segmenting positives:\t\t%s',''); end
     pL = fws.watershed(obj.pV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Pos watershed
     % negatives
-    if obj.verbose; fprintf('\n Segmenting negatives:\t%s',''); end
+    if obj.verbose; fprintf('\n Segmenting negatives:\t\t%s',''); end
     nL = fws.watershed(obj.nV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Neg watershed    
            
     % combine labels from pos & neg segmentations
-    if obj.verbose; fprintf('\n Combining labels:%s',''); end
+    if obj.verbose; fprintf('\n Combining labels%s',''); end
     obj.label = fws.combine_labels(nL, pL);
     % keep seperated neg/pos labels in obj
     obj.pL = obj.label.*(pL>0);
@@ -245,9 +245,9 @@ end
 %% PLOTTING 
 
 if obj.plot % Minimal visualisation figure
-    fprintf('\n Generating interactive figure\n')
+    fprintf('\n Generating interactive figure')
     obj = plot.interactive(obj);
-    if obj.verbose; fprintf(' Completed segmentation & ROI visualisation in %s seconds\n',num2str(toc(tc)));end 
+    if obj.verbose; fprintf('\n Completed segmentation & ROI visualisation in %s seconds\n',num2str(toc(tc)));end 
 elseif obj.verbose
     fprintf('\n Completed segmentation in %s seconds\n',num2str(toc(tc)))  
 end

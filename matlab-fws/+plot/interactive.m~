@@ -153,9 +153,9 @@ end
 
 
 obj = plot.ui_roi(AX{4},obj);
-text(main,7.5,0.535,'Fusion-WS ROIs','FontSize',22,'FontWeight','bold')
+text(main,7.5,0.535,'Fusion-WS ROIs (MNI)','FontSize',22,'FontWeight','bold')
 
-plot.ui_bar(AX{5},obj.table.Peak,1:height(obj.table),obj.colour_map,'Peak magnitude',[num2str(obj.nROI) ' ROIs']);
+plot.ui_bar(AX{5},obj.table.Peak,1:height(obj.table),obj.colour_map,'Peak magnitude','ROIs');
 
 plot.ui_barh(AX{6},obj);
 
@@ -177,11 +177,6 @@ rotate3d(AX{4},'on');
                 if strcmp(H.Tag,'Radius'); obj.radius = a;end
                 if strcmp(H.Tag,'Filter'); obj.filter = a;end
              case 'Reapply'
-                if obj.verbose 
-                    fprintf('\n Re-applying Fusion-WS');
-                    fprintf('\n Parameters:\n\t filter: %s\n\t radius: %s\n\t merge : %s\n', num2str(obj.filter), num2str(obj.radius), num2str(obj.merge)); 
-                end
-                
                 f = plot.wait_bar(0,'Reapplying Watershed');    
                 if obj.K.two_tailed
                     pL = fws.watershed(obj.pV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',false);
@@ -201,14 +196,11 @@ rotate3d(AX{4},'on');
                 obj.table = sortrows(obj.table,'Peak', 'descend'); % Sort table 
                 obj = plot.ui_roi(AX{4},obj);
                 plot.wait_bar(0.9,'Finished ploting ROI sets',f); 
-                plot.ui_bar(AX{5},obj.table.Peak,1:height(obj.table),obj.colour_map,'Peak magnitude',[num2str(obj.nROI) ' ROIs']);
+                plot.ui_bar(AX{5},obj.table.Peak,1:height(obj.table),obj.colour_map,'Peak magnitude','ROIs');
                 plot.ui_barh(AX{6},obj);
                 ra.BackgroundColor =   fws.hex2rgb("F2F2F2");   
                 ra.ForegroundColor =    fws.hex2rgb("979797"); 
                 close(f);
-                
-                if obj.verbose; fprintf('\n'); end
-                
             case 'Export'
                 [~,name,~] = fileparts(obj.path);
                 name = erase(name,'.nii');

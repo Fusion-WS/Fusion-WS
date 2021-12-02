@@ -77,7 +77,7 @@ end
 
 if obj.verbose
     tC=toc; 
-    fprintf(' Completed in %s seconds\n',num2str(tC))
+    fprintf(' Completed in %s seconds',num2str(tC))
 end
 
 
@@ -169,7 +169,7 @@ for ii=id(2:end)' % Skipping 0's
 end
 
 if obj.verbose
-    fprintf(' Completed in %s seconds\n',num2str(toc(tc)))
+    fprintf(' Completed in %s seconds',num2str(toc(tc)))
 end
 
 end

@@ -234,6 +234,7 @@ if obj.K.two_tailed
 end
 
 
+
 if obj.plot % Minimal visualisation figure
     fprintf('\n Generating interactive figure\n')
     obj = plot.interactive(obj);

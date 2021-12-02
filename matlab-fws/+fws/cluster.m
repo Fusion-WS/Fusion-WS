@@ -80,7 +80,7 @@ for jj=1:CC.NumObjects
         end
         % Progress report
         if ~mod(ii,1000) && obj.verbose
-            if mod(ii,50000);fprintf('*');else;fprintf('\n\t\t\t');end
+            if mod(ii,50000);fprintf('*');else;fprintf('\n\t\t\t\t');end
         end
     end
     LL = LL + L;

@@ -57,11 +57,8 @@ function obj = generate_ROI(P,varargin)
 % 
 % You should have received a copy of the GNU General Public License
 % along with Fusion Pipeline.If not, see <http://www.gnu.org/licenses/>.
+%
 %------------- BEGIN CODE --------------
-%
-%
-%
-%
 %% Welcome logo
 clc
 disp('    ______         _         __          _______ ');
@@ -104,19 +101,18 @@ else
     [V,G,hdr] = load.vol(P);        
 end
 
-
-
 % Put everything into a struct
 obj = struct('path',P,'input_volume',double(V),'volume',double(V),'grid',G,...
              'header',hdr,'radius',1,'merge',100,'filter',300,'verbose',true,...
              'tail',false,'threshold_method','iqr','output',false,...
              'threshold_value',0.85,'threshold_plot',false,...
-              'smooth',false,'plot',true,'export',true,'binary',false);
+              'smooth',false,'plot',true,'export',true);
          
 % Parse user inputs          
 obj = fws.defaults(obj, varargin);
 
-
+% Clear data that is now in obj
+clear P V G hdr
 
 % define output directory
 if ~obj.output
@@ -128,11 +124,9 @@ elseif ~islogical(obj.output) && ischar(obj.output)
     clear FILEPATH NAME
 end    
 
-
-
 %% PREPROCESS VOLUME
 
-% Work out the kind of input
+% Infer properties of the input
 obj.K = fws.volume_kind(obj.volume,obj.tail); 
 
 % Progress update
@@ -141,32 +135,37 @@ if obj.verbose
     
     fprintf('\n Input kind:\n')
     if obj.K.binary
-        fprintf(['\t binary: %s\n'], mat2str(obj.K.binary))
+        fprintf('\t binary: %s\n', mat2str(obj.K.binary))
     else
-        fprintf(['\t thresholded: %s\n'], mat2str(obj.K.thresholded))
+        fprintf('\t thresholded: %s\n', mat2str(obj.K.thresholded))
         if obj.K.two_tailed
-            fprintf(['\t two-tailed: %s\n'], mat2str(obj.K.two_tailed))
+            fprintf('\t two-tailed: %s\n', mat2str(obj.K.two_tailed))
         else
-            fprintf(['\t one-tailed: %s\n'], fd{contains(fd, {'positive','negative'}) & struct2array(obj.K)'})
+            fprintf('\t one-tailed: %s\n', fd{contains(fd, {'positive','negative'}) & struct2array(obj.K)'})
         end
     end
     clear fd
 end    
-    
+
+% Apply 3D gauss smooth if requested. 
 if obj.smooth
     obj.volume = imgaussfilt3(obj.volume,obj.smooth);
 end
-% Is volume binary?
+
+% Is volume binary or parametric?
 if obj.K.binary
+    
     % Convert volume into an inverted distance matrix
     obj.volume = fws.bin_to_inv_distance(obj.volume);
-
-else % If volume is parametric/continuous 
-    if obj.K.two_tailed % Two-tailed, it has both positive and negative values
-
+    %obj.volume = fws.bin_to_inv_distance(~isnan(obj.volume));
+    
+else % If volume is parametric/continuous
+    
+    % Two-tailed, it has both positive and negative values
+    if obj.K.two_tailed 
         % Split volume into seperate pos & neg volumes
-        [pV,nV]=deal(obj.volume);        pV(pV<=0)= NaN; nV(nV>=0)= NaN;
-        if ~obj.K.thresholded
+        [pV,nV]=deal(obj.volume); pV(pV<=0)= NaN; nV(nV>=0)= NaN;
+        if ~obj.K.thresholded % Apply auto threshold if input has not been thresholded
                 if obj.verbose; fprintf('\n Unthresholded map: \n\t Applying threshold to positive & negative values...\t%s\n',''); end
                 [obj.pV,pt] = fws.threshold('data', pV, 'threshold_method',obj.threshold_method, 'threshold_value',obj.threshold_value,'plot',obj.threshold_plot); 
                 [obj.nV,nt] = fws.threshold('data', abs(nV), 'threshold_method',obj.threshold_method, 'threshold_value',obj.threshold_value,'plot',obj.threshold_plot); % Return neg as absolute values
@@ -176,52 +175,49 @@ else % If volume is parametric/continuous
         end
         obj.volume = cat(4,obj.pV,obj.nV);
         obj.threshold_value = [pt,-nt];
-    
         
     else % One_tailed, it has either positive or negative values
-        if ~obj.K.thresholded % IQR threshold% IQR threshold
+        if ~obj.K.thresholded % IQR threshold
             if obj.verbose; fprintf('\n Unthresholded map: thresholding...\t%s\n',''); end
 
-           switch obj.tail
+            % NaN out elements depending on which tail is in the volume. 
+            switch obj.tail
                case 'positive';obj.volume(obj.volume<=0)=nan;
                case 'negative';obj.volume(obj.volume>=0)=nan;    
-           end
-                
+            end
+            % Apply auto-threshold    
             [obj.volume,obj.threshold_value] = fws.threshold('data', abs(obj.volume),'threshold_method',obj.threshold_method, 'threshold_value',obj.threshold_value,'plot',obj.threshold_plot);
-        else 
-            obj.threshold_value = min(obj.volume(~isnan(obj.volume)));
+        else % if one-tailed and thresholded
+            obj.threshold_value = min(obj.volume(~isnan(obj.volume))); % Find stat threshold used. 
             obj.threshold_method = 'predefined';
         end
         
     end
 end
 
-if obj.binary
-    obj.volume = fws.bin_to_inv_distance(~isnan(obj.volume));
-end
+%% WATERSHED BY IMMERSION CLUSTERING
 
-%% WATERSHED
-
+% print out clustering parameters being used. 
 if obj.verbose; fprintf('\n Parameters:\n\t filter: %s\n\t radius: %s\n\t merge : %s\n', num2str(obj.filter), num2str(obj.radius), num2str(obj.merge));end
 
-if obj.K.two_tailed
-    % Seprate watershed calls on positive and negative volumes
+if obj.K.two_tailed % Seprate watershed calls on positive and negative volumes
+    % positives
     if obj.verbose; fprintf('\n Segmenting positives:\t%s',''); end
     pL = fws.watershed(obj.pV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Pos watershed
-    
+    % negatives
     if obj.verbose; fprintf('\n Segmenting negatives:\t%s',''); end
     nL = fws.watershed(obj.nV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Neg watershed    
            
-    % combine labels
+    % combine labels from pos & neg segmentations
     if obj.verbose; fprintf('\n Combining labels:%s',''); end
     obj.label = fws.combine_labels(nL, pL);
+    % keep seperated neg/pos labels in obj
     obj.pL = obj.label.*(pL>0);
     obj.nL = obj.label.*(nL>0);
 else % Binary or one_tailed
     if obj.verbose; fprintf('\n Segmenting map: \t\t%s',''); end
     obj.label = fws.watershed(obj.volume,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); 
 end
-
 
 %% TABLE
 

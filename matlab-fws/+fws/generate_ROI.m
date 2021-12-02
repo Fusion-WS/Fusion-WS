@@ -57,11 +57,8 @@ function obj = generate_ROI(P,varargin)
 % 
 % You should have received a copy of the GNU General Public License
 % along with Fusion Pipeline.If not, see <http://www.gnu.org/licenses/>.
+%
 %------------- BEGIN CODE --------------
-%
-%
-%
-%
 %% Welcome logo
 clc
 disp('    ______         _         __          _______ ');
@@ -155,7 +152,6 @@ if obj.smooth
     obj.volume = imgaussfilt3(obj.volume,obj.smooth);
 end
 
-
 % Is volume binary or parametric?
 if obj.K.binary
     
@@ -179,51 +175,51 @@ else % If volume is parametric/continuous
         end
         obj.volume = cat(4,obj.pV,obj.nV);
         obj.threshold_value = [pt,-nt];
-    
         
     else % One_tailed, it has either positive or negative values
-        if ~obj.K.thresholded % IQR threshold% IQR threshold
+        if ~obj.K.thresholded % IQR threshold
             if obj.verbose; fprintf('\n Unthresholded map: thresholding...\t%s\n',''); end
 
-           switch obj.tail
+            % NaN out elements depending on which tail is in the volume. 
+            switch obj.tail
                case 'positive';obj.volume(obj.volume<=0)=nan;
                case 'negative';obj.volume(obj.volume>=0)=nan;    
-           end
-                
+            end
+            % Apply auto-threshold    
             [obj.volume,obj.threshold_value] = fws.threshold('data', abs(obj.volume),'threshold_method',obj.threshold_method, 'threshold_value',obj.threshold_value,'plot',obj.threshold_plot);
-        else 
-            obj.threshold_value = min(obj.volume(~isnan(obj.volume)));
+        else % if one-tailed and thresholded
+            obj.threshold_value = min(obj.volume(~isnan(obj.volume))); % Find stat threshold used. 
             obj.threshold_method = 'predefined';
         end
         
     end
 end
 
+%% WATERSHED BY IMMERSION CLUSTERING
 
-%% WATERSHED
-
+% print out clustering parameters being used. 
 if obj.verbose; fprintf('\n Parameters:\n\t filter: %s\n\t radius: %s\n\t merge : %s\n', num2str(obj.filter), num2str(obj.radius), num2str(obj.merge));end
 
-if obj.K.two_tailed
-    % Seprate watershed calls on positive and negative volumes
+if obj.K.two_tailed % Seprate watershed calls on positive and negative volumes
+    % positives
     if obj.verbose; fprintf('\n Segmenting positives:\t%s',''); end
     pL = fws.watershed(obj.pV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Pos watershed
-    
+    % negatives
     if obj.verbose; fprintf('\n Segmenting negatives:\t%s',''); end
     nL = fws.watershed(obj.nV,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); % Neg watershed    
            
     % combine labels from pos & neg segmentations
     if obj.verbose; fprintf('\n Combining labels:%s',''); end
     obj.label = fws.combine_labels(nL, pL);
+    % keep seperated neg/pos labels in obj
     obj.pL = obj.label.*(pL>0);
     obj.nL = obj.label.*(nL>0);
-else % Binary or one_tailed
+else % One_tailed or binary inputs (binary is converted into a one-tailed map during preprocessing)
     if obj.verbose; fprintf('\n Segmenting map: \t\t%s',''); end
     obj.label = fws.watershed(obj.volume,'radius',obj.radius,'merge',obj.merge,'filter',obj.filter,'verbose',obj.verbose); 
 end
 
-
-%% TABLE
+%% LABEL TO TABLE
 
 % Assign each ROI with atlas information
 if ~islogical(obj.tail)
@@ -234,24 +230,24 @@ if ~islogical(obj.tail)
 else
     obj.table = fws.label_to_table('volume',obj.input_volume,'label', obj.label, 'grid', obj.grid);
 end
+
 % Define number of ROIs in parcellation 
 obj.nROI = height(obj.table);
 % Sort table rows from largest positive peak to largest negative
 obj.table = sortrows(obj.table,'Peak', 'descend'); % Sort table 
 
+% count nROI for each tail
 if obj.K.two_tailed 
     obj.nROI_negative = numel(unique(obj.nL(obj.nL>0)));
     obj.nROI_positive = numel(unique(obj.pL(obj.pL>0)));  
 end
 
+%% PLOTTING 
+
 if obj.plot % Minimal visualisation figure
     fprintf('\n Generating interactive figure\n')
     obj = plot.interactive(obj);
-    
-    if obj.verbose
-        fprintf(' Completed segmentation & ROI visualisation in %s seconds\n',num2str(toc(tc))) 
-    end
-    
+    if obj.verbose; fprintf(' Completed segmentation & ROI visualisation in %s seconds\n',num2str(toc(tc)));end 
 elseif obj.verbose
     fprintf('\n Completed segmentation in %s seconds\n',num2str(toc(tc)))  
 end

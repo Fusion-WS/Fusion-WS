@@ -89,12 +89,9 @@ AX = {};
 for ii=1:3
     AX{ii}=axes('Position',[x(c(ii))+g(1)+g(2)*ii+sum(w(1:(ii-1))),y(c(ii)),w(ii),h(ii)]);
 end
-
 AX{4}=axes('Position',[x(c(4)),y(c(4)),w(4),h(4)]);
-
 for ii=5:6
-    AX{ii}=axes('Position',[x(c(ii))+g(3)*(ii-5)+sum(w(5:(ii-1))),y(c(ii)),w(ii),h(ii)]);
-    
+    AX{ii}=axes('Position',[x(c(ii))+g(3)*(ii-5)+sum(w(5:(ii-1))),y(c(ii)),w(ii),h(ii)]); 
 end
 
 imagesc(top,ones(1,10));axis(top,'off');colormap(top,fws.hex2rgb("181932"));
@@ -111,7 +108,6 @@ uicontrol(fg, 'Style','edit','Units','normalized',...
     'Position',B(2,:),'CallBack',@callb,...
     'String',obj.radius,'FontUnits','normalized','FontSize',0.5,...
     'FontName','Helvetica','Tag','Radius');
-
 
 uicontrol(fg, 'Style','edit','Units','normalized',...
     'Position',B(3,:),'CallBack',@callb,...

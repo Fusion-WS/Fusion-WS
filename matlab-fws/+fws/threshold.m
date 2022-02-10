@@ -60,7 +60,7 @@ switch obj.threshold_method
 end
 
 Y=obj.data;
-Y(Y<t)=NaN;
+Y(abs(Y)<t)=NaN;
 
 
 if obj.threshold_plot

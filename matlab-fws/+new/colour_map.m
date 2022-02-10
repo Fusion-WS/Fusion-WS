@@ -54,12 +54,12 @@ CM = fws.defaults(CM, varargin);
 % Default colours
 if ~islogical(CM.map)
     switch CM.map
-        case 'pos';   CM.colour = fws.hex2rgb(["B21212";"F59B1A"]);
-        case 'neg';   CM.colour = fws.hex2rgb(["3361AB";"2DBDE9"]);
-        case 'both';  CM.colour = fws.hex2rgb(["2DBDE9";"3361AB";"C1BDBD";"B21212";"F59B1A"]);
+        case 'pos';       CM.colour = fws.hex2rgb(["B21212";"F59B1A"]);
+        case 'neg';       CM.colour = fws.hex2rgb(["3361AB";"2DBDE9"]);
+        case 'both';      CM.colour = fws.hex2rgb(["2DBDE9";"3361AB";"C1BDBD";"B21212";"F59B1A"]);
         case 'pos_dist';  CM.colour = fws.hex2rgb(["510707";"B21212";"F59B1A";"F9F685"]);%"FCFCF7"
         case 'neg_dist';  CM.colour = fws.hex2rgb(["0A1260";"3361AB";"2DBDE9";"B0F0FF"]);%;"EBFBFF"    
-        case 'soreq'; CM.colour = [0.2745 0.251 0.6; 0.1176 0.5961 0.8353; 0 0 0; 0.9843 0.7765 0.3333; 0.9569 0.9216 0.1451];
+        case 'soreq';     CM.colour = [0.2745 0.251 0.6; 0.1176 0.5961 0.8353; 0 0 0; 0.9843 0.7765 0.3333; 0.9569 0.9216 0.1451];
         otherwise
             error(['Error: ' CM.map 'not recognised'])
     end

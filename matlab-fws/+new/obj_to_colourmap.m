@@ -54,7 +54,7 @@ elseif obj.K.two_tailed
     % Two tailed maps get a negative (cool) and positive (warm) colourmap
     ROI_negative = obj.table.Peak<0; % Tmp index of the negative clusters.
     obj.colour_map = [fws.value_to_cmap(new.colour_map('map','pos'), obj.table.Peak(~ROI_negative));...
-        fws.value_to_cmap(new.colour_map('map','neg'), abs(obj.table.Peak(ROI_negative)))];
+                      fws.value_to_cmap(new.colour_map('map','neg'), abs(obj.table.Peak(ROI_negative)))];
     
 elseif obj.K.positive
     

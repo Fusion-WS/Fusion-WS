@@ -16,11 +16,10 @@ statistics_toolbox
 ```
 <br>
 
-## Installation 
+## Installation & Demo
 Download and unzip into your Matlab path. 
 <br>
 
-## DEMO - Default workflow
 The default workflow is called with `fws.generate_ROI.m` and will run the watershed ROI creation using an fMRI task activation map of the multiple-demand cortex<sup>2</sup>. An interactive GUI will be generated to visualise the input map alongside a 3D render of the ROIs and some basic summaries of the ROI volume and peak voxel magnitudes. The demo can be simply called by:
 
 ```

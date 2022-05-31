@@ -2,7 +2,7 @@
 
 The ***FU***nctional & ***S***tructural ***I***ntegration ***O***f ***N***euroimages (Fusion) - ***W***ater***S***hed (WS) toolbox.
 
-The Fusion-WS toolbox provides a data-driven pipeline for creating regions of interest (ROIs) from 3D functional MRI (fMRI) task activation contrasts. At its core, Fusion-WS relies on a variant of the classic watershed algorithm<sup>1</sup> to transform smooth continuous statistical spaces into discrete ROIs. Watershed is an elegant but naive approach that doesn't assume gaussianity or apriori knowledge of the number of clusters/ROI (in contrast to *k*-means, for example).
+The Fusion-WS toolbox provides a data-driven pipeline for creating regions of interest (ROIs) from 3D functional MRI (fMRI) task activation contrasts. At its core, Fusion-WS relies on a variant of the classic watershed algorithm<sup>1</sup> to transform smooth continuous statistical spaces into discrete ROIs. Watershed is an elegant but naive approach that doesn't assume spatial gaussianity or require apriori knowledge of the number of clusters/ROI (in contrast to *k*-means, for example).
 
 The current Fusion-WS toolbox is implemented in Matlab. 
 
@@ -14,8 +14,10 @@ signal_toolbox
 statistics_toolbox
 ```
 
+
 ### Installation 
 Download and unzip into your Matlab path. 
+
 
 ### Default pipeline - DEMO
 The default pipeline is called with ```fws.generate_ROI.m``` and will run the watershed ROI creation using an fMRI task activation map of the multiple-demand cortex<sup>2</sup>. An interactive GUI will be generated to visualise the input map alongside a 3D render of the ROIs and some basic summaries of the ROI volume and peak voxel magnitudes. The demo can be simply called by:

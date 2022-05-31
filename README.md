@@ -2,7 +2,7 @@
 
 The ***FU***nctional & ***S***tructural ***I***ntegration ***O***f ***N***euroimages (Fusion) - ***W***ater***S***hed (WS) toolbox.
 
-The Fusion-WS toolbox provides a data-driven pipeline for creating regions of interest (ROIs) from 3D functional MRI (fMRI) task activation contrasts. At its core, Fusion-WS relies on a variant of the classic watershed by floodfill immersion algorithm<sup>1</sup> to transform smooth continuous statistical spaces into discrete ROIs. Watershed is an elegant but naive approach that doesn't assume spatial gaussianity or require apriori knowledge of the number of clusters/ROI (in contrast to *k*-means, for example).
+The Fusion-WS toolbox provides a data-driven pipeline for creating regions of interest (ROIs) from 3D functional MRI (fMRI) task activation contrasts. At its core, Fusion-WS relies on a variant of the classic watershed by floodfill immersion algorithm<sup>1</sup> to transform smooth continuous statistical spaces into discrete ROIs. Watershed is an elegant, but naive, deterministic approach that doesn't assume spatial gaussianity or require apriori knowledge of the number of clusters/ROI (in contrast to *k*-means, for example).
 
 The current Fusion-WS toolbox is implemented in `Matlab`.
 <br>
@@ -53,7 +53,7 @@ fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "filter", 300, "radius", 
 ![](workflow.png)<br>
 
 ### 1. Preprocessing
-For best results, we recommend using a 3D fMRI task-activation input map that has been statistically thresholded and/or corrected for multiple comparisons. The first stage of the default workflow checks for this and other properties. An internal IQR thresholding is applied to unthresholded input maps to retain the top 10% of voxels. 
+For best results, we recommend using a 3D fMRI task-activation input map that has been registered to MNI space, statistically thresholded and/or corrected for multiple comparisons. The first stage of the default workflow checks for this and other properties. An internal IQR thresholding is applied to unthresholded input maps to retain the top 10% of voxels. 
 
 - Detect input map type `fws.volume_kind.m`:
 - Kind: Parametric or binary. 
@@ -70,13 +70,16 @@ For parametric maps, the following procedure is applied to each tail of the inpu
 
 <br>3. A final step is applied to combine neighbouring ROIs, within a component, if an ROI has a volume that is below the `merge` parameter.<br>
 
-
 ![](watershed_algorithm.png)<br>
 
 
-### 3. ROI statistics
+### 3. Anatomical labelling
+The `fws.label_to_tabel.m` function is the unsung hero of the Fusion-WS toolbox. Label_to_table is an automated ROI labelling system that speeds up the process of reporting ROI characteristics. A table of labels is generated using a set of publically available atlases to assign anatomical and functional labels to each ROI. We assume that the input map has been registered to MNI space but the atlases are resampled (via `fws.interpolator.m`) to match the input map grid resolution.
 
-### 4. Anatomical labelling
+### 4. ROI visualisation
+
+
+## Other Fusion-WS parameters
 
 ### References
 1. Meyer, F. and Beucher, S., 1990. Morphological segmentation. Journal of visual communication and image representation, 1(1), pp.21-46.

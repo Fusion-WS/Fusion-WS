@@ -139,7 +139,7 @@ end
 
 
 % fill panels 
-titles = ["Axial";"Right Sagittal";"Coronal anterior"];
+titles = ["Axial";"Sagittal";"Coronal"];
 
 for ii=1:3
     plot.mip_blend(AX{ii},tmp{ii});

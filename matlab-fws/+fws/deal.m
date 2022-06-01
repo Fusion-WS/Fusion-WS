@@ -1,5 +1,5 @@
 function [varargout]=deal(M,type)
-%% fusion.get.arc - get arc between two
+%% fws.deal - deal inputs to outputs
 %
 %    __           _             
 %   / _|         (_)            
@@ -13,18 +13,6 @@ function [varargout]=deal(M,type)
 %  EMAIL:  e.soreq14@imperial.ac.uk
 %  AFFILIATION:  Imperial College London
 %  VERSION:  0.0 CREATED: 3-June-2020 09:18:27
-%
-%% INPUTS:
-%         x - x and y are the coordinates of the center of the circle
-%         y - coordinates of the center of the circle
-%         r - r is the radius of the circle
-%         step - 0.01 is the angle step, bigger values will draw the circle faster but
-%         you might notice imperfections (not very smooth)  
-%
-%% EXAMPLES:
-%{
-
-%}
 %
 %% DEPENDENCIES:
 %

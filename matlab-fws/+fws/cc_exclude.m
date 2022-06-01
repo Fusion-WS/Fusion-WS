@@ -1,5 +1,5 @@
 function CC = cc_exclude(Y,exclude)
-%% FWS.CC_EXCLUDE: Create connected components and cleanup up by removing small and independent components
+%% FWS.CC_EXCLUDE: Create connected components and filter small components
 %
 %   __           _             
 %  / _|         (_)            

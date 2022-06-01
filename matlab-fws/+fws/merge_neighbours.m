@@ -20,8 +20,9 @@ function [L,stats] = merge_neighbours(L,Y,CC,obj)
 %    obj - Defaults obj   
 %
 % OUTPUT:
-%    L - Merged label 
-%    stats - A table of
+%    L - Merged label map
+%    stats - A table of ROI stats (e.g., volume, centroid)
+%
 % EXAMPLES:
 %{
 [L,stats] = fws.merge_neighbours(L,Y,obj)
@@ -53,6 +54,7 @@ for jj=1:CC.NumObjects
     l = zeros(obj.sz);
     l(CC.PixelIdxList{jj})=L(CC.PixelIdxList{jj}); % Place the original values of the jjth component into the void (creating a mountain)
     stats = regionprops3(l,y,{'Volume','MeanIntensity','Centroid','VoxelIdxList'});
+    
     if obj.merge
         merge = obj.merge;
         radius = obj.radius;

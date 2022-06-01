@@ -1,5 +1,5 @@
 function V = combine_labels(v1,v2)
-%% ATLAS.MERGE: go over two label volumes that share a grid system and merge them dealing with sttraies using the mode of the neighborhood
+%% fws.combine_labels: Combine two label maps (e.g., from positive & negative weights)
 %
 %   __           _             
 %  / _|         (_)            
@@ -24,7 +24,7 @@ function V = combine_labels(v1,v2)
 %
 %% EXAMPLES:
 %{
-V = atlas.merge(v1,v2)
+V = fws.combine_labels(v1,v2)
 %}
 %
 %% DEPENDENCIES:
@@ -44,20 +44,16 @@ V = atlas.merge(v1,v2)
 %------------- BEGIN CODE --------------
 %
 
-if any(isnan(v1(:)))
-    ix1 = isnan(v1);
-    v1(ix1)=0;
-end
+% Replace NaN with 0
+v1(isnan(v1))=0;
+v2(isnan(v2))=0;
 
-if any(isnan(v2(:)))
-    ix2 = isnan(v2);
-    v2(ix2)=0;
-end
-
+% Combine both volumes
 mv = v1+v2;
 mid = unique(mv(mv~=0));% merged id's
 cid = [unique(v1(v1~=0));unique(v2(v2~=0))];% concatenated id's
 sid = mid(~ismember(mid,cid));% stray id's 
+
 if isempty(sid)
     V = v1;
     V(v2>0)= v2(v2>0)+max(v1(:));

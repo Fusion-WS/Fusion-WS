@@ -15,12 +15,12 @@ function L = cluster(Y,CC,obj)
 %  VERSION:  0.0 CREATED: 30-Jun-2020 18:46:38
 %
 % INPUTS:
-%    Y -  thresholded distance volume with positive values 
+%    Y  - thresholded distance volume with positive values 
 %    CC - connected componenets 
 %
 %
 % OUTPUT:
-%    L - 
+%    L - Label map
 %
 % EXAMPLES:
 %{
@@ -44,11 +44,15 @@ function L = cluster(Y,CC,obj)
 %------------- BEGIN CODE --------------
 %
 
-LL=zeros(size(Y)); 
-sz = size(Y); % Define the size of the input volume
-m=1; % Class counter 
+% Define the size of the input volume
+sz = size(Y); 
+% preal zeros to build label map into
+LL=zeros(sz); 
 
-% For each spatial component
+% Class counter - Keep track of the unique classes found
+m=1;  
+
+% We cluster within each spatial component
 for jj=1:CC.NumObjects
     
     y = -inf(sz); % Create an n-dim void space of neg inf (this avoids adjacent components from being accidentally merged)
@@ -83,9 +87,9 @@ for jj=1:CC.NumObjects
             if mod(ii,50000);fprintf('*');else;fprintf('\n\t\t\t\t');end
         end
     end
-    LL = LL + L;
+    LL = LL + L; % Add cluster to label map
 end
-L = LL;
+L = LL; % return final label map
 
 end
 %------------- END OF CODE --------------

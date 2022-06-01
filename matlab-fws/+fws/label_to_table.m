@@ -15,15 +15,16 @@ function T = label_to_table(varargin)
 %  VERSION:  0.0 CREATED: 30-Jun-2020 18:46:39
 %
 % INPUTS:
-%    L - 
-%
+%       volume - Input volume
+%       label - label map
+%       grid - grid object
 %
 % OUTPUT:
-%    T - 
+%       T - table of ROI stats 
 %
 % EXAMPLES:
 %{
-[T] = label_to_table(L)
+obj.table = fws.label_to_table('volume',obj.volume,'label', obj.label, 'grid', obj.grid);
 %}
 %
 % DEPENDENCIES:
@@ -43,25 +44,28 @@ function T = label_to_table(varargin)
 %------------- BEGIN CODE --------------
 %
 
+% Find and load in structure of Atlases
 source = strsplit(which(['fws.' mfilename]),'+');
 load([source{1} filesep '+fws' filesep 'atlas.mat']);
 
-
+% Defaults
 obj = struct('atlas',{fieldnames(Atlas)},'volume',false,'label',false,'grid',false,'verbose',true);
 obj = fws.defaults(obj, varargin);
 
+% Catch for if label map is missing
 if numel(obj.label)==1
     error('Label map not found')
 end
 
+% Catch for if grid is missing
 if islogical(obj.grid)
     error('Grid is not found')
 end
 
+% Determine if volume is binary or continuous 
+magnitude = false;
 if ~islogical(obj.volume)
-    magnitude = true;
-else
-    magnitude = false;
+    magnitude = true; 
 end
 
 % Interpolate atlas(es) to match label grid
@@ -69,12 +73,10 @@ if obj.verbose
     fprintf(['\n Interpolating %s atlases:' repmat(' ',1,9)],numel(obj.atlas))
     tic;
 end
-
 for ii = 1:numel(obj.atlas)
     Atlas.(obj.atlas{ii}).Lr = fws.interpolator('source_volume',Atlas.(obj.atlas{ii}).L,'source_grid',Atlas.(obj.atlas{ii}).G,'target_volume',obj.label,'target_grid',obj.grid);
     fprintf('*')
 end
-
 if obj.verbose
     tC=toc; 
     fprintf(' Completed in %s seconds',num2str(tC))
@@ -83,15 +85,17 @@ end
 
 % number of clusters / ROIs
 id = unique(obj.label(~isnan(obj.label))); 
-
 if obj.verbose
     nROI = num2str(numel(id(2:end)));
     fprintf(['\n Assigning labels to %s ROIs:' repmat(' ',1,7)], nROI) 
 end
 
-
+% table to be filled with ROI labels
 T = table();
+
+% timer
 if obj.verbose; tc=tic; end
+
 for ii=id(id>0)'%id(2:end)' % Skipping 0's
     tmp = table();
     tmp.ROIid = ii;

@@ -39,8 +39,10 @@ Catpure the default output structure into a variable. The structure contains inf
 ```
 % Create ROIs from just positive weights
 obj_pos = fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "tail", "positive");
+
 % Create ROIs from just negative weights
 obj_neg = fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "tail", "negative");
+
 % Create ROIs with positive and negative weights
 obj_both = fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "tail", "both");
 ```

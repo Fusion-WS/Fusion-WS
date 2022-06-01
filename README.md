@@ -82,6 +82,11 @@ The default workflow generates an interactive figure to allow a visual inspectio
 
 ![](images/gui.png)<br>
 
+### 5. Report export
+The `Export` button saves a `.nii.gz` ROI label map and a `.csv` file of the anatomical labelling and statistical characteristics of the ROI set.  
+
+![](images/ROIS.png)<br>
+
 ## Other Fusion-WS parameters
 
 ### References

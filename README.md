@@ -31,7 +31,18 @@ fws.generate_ROI("demo")
 # Using your own data
 Simply provide a valid pathname to a `.nii` or `.nii.gz` file to the `fws.generate_ROI.m` function:
 ```
-fws.generate_ROI("path/to/my_fMRI_activation_map.nii");
+obj = fws.generate_ROI("path/to/my_fMRI_activation_map.nii");
+```
+Catpure the default output structure into a variable. The structure contains information on the Fusion-WS parameters used to define ROIs alongside the 3D label map and ROI table. 
+
+## Creating ROIs from positive and/or negative weights
+```
+% Create ROIs from just positive weights
+obj_pos = fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "tail", "positive");
+% Create ROIs from just negative weights
+obj_neg = fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "tail", "negative");
+% Create ROIs with positive and negative weights
+obj_both = fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "tail", "both");
 ```
 <br>
 

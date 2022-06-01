@@ -1,5 +1,5 @@
 function D = bin_to_inv_distance(V)
-%% FWS.BIN_TO_INV_DISTANCE: Convert a binary variable into an inverted distance matrix
+%% FWS.BIN_TO_INV_DISTANCE: Convert a binary volume into an inverted distance matrix
 %
 %   __           _             
 %  / _|         (_)            
@@ -15,7 +15,7 @@ function D = bin_to_inv_distance(V)
 %  VERSION:  0.0 CREATED: 01-Jul-2020 11:28:43
 %
 % INPUTS:
-%    V - binary variable
+%    V - binary volume
 % OUTPUT:
 %    D - binary distance 
 % EXAMPLES:

@@ -151,7 +151,6 @@ if obj.K.binary
     
     % Convert volume into an inverted distance matrix
     obj.volume = fws.bin_to_inv_distance(obj.volume);
-    %obj.volume = fws.bin_to_inv_distance(~isnan(obj.volume));
     
 else % If volume is parametric/continuous
     

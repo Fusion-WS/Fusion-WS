@@ -1,5 +1,5 @@
 function K = volume_kind(V,tail)
-% FWS.VOLUME_KIND: Returns a classification of the volume "kind"
+% FWS.VOLUME_KIND: Designed to detect properties of the input volume
 %
 %   __           _             
 %  / _|         (_)            
@@ -15,7 +15,7 @@ function K = volume_kind(V,tail)
 %  VERSION:  0.0 CREATED: 01-Jul-2020 15:09:14
 %
 % INPUTS:
-%    V - Data to be classified into a kind (e.g., Binary, positive etc). 
+%    V - Volume to be classified into a kind (e.g., Binary, positive etc). 
 % OUTPUT:
 %    K - Kind is a struct with the following fields containing logicals
 %       

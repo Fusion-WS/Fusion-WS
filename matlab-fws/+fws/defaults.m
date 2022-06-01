@@ -1,5 +1,5 @@
 function [obj,fld] = defaults(obj,varobj)
-% FWS.DEFAULTS: One line description of what the function or script performs
+% FWS.DEFAULTS: Used to handle default and custom options to be added to obj. 
 %
 %   __           _             
 %  / _|         (_)            
@@ -13,19 +13,6 @@ function [obj,fld] = defaults(obj,varobj)
 %  EMAIL:  e.soreq14@imperial.ac.uk
 %  AFFILIATION:  Imperial College London
 %  VERSION:  0.0 CREATED: 01-Jul-2020 15:45:25
-%
-% INPUTS:
-%    varargin - 
-%    obj - 
-%
-%
-% OUTPUT:
-%    obj - 
-%
-% EXAMPLES:
-%{
-[obj] = defaults(varargin,obj)
-%}
 %
 % DEPENDENCIES:
 %
@@ -43,10 +30,15 @@ function [obj,fld] = defaults(obj,varobj)
 % along with Fusion Pipeline.If not, see <http://www.gnu.org/licenses/>.
 %------------- BEGIN CODE --------------
 %
+
+% New input fields to process
 inputs = varobj(1:2:end);
+% New input values to process
 values = varobj(2:2:end);
               
+% fields of existing obj
 vars = fieldnames(obj);
+% Go over each input & add to obj
 for ii = 1:numel(inputs)
     [ia,ib]=ismember(inputs{ii},vars);
     if ia;obj.(vars{ib}) = values{ii};end

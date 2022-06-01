@@ -23,17 +23,15 @@ function [Y,t] = threshold(varargin)
 %       threshold_value - Depends on threshold_method, e.g., 0.9 with an iqr method
 %                         keeps the top 10% of voxels in the distribution. 
 %       
-%       plot - True/False plot the unthresholded and thresholded voxel
-%              distributions (default=false)
+%       plot - True/False plot the 
 %
 %
 % OUTPUT:
-%       Y - Thresholded volume
-%       t - Threshold value
+%    Yt - 
 %
 % EXAMPLES:
 %{
-[threshold_volume, threshold_value] = fws.threshold('data', volume, 'threshold_method', 'iqr', 'threshold_value', 0.90, 'plot',false); 
+[Yt] = threshold(Y,method)
 %}
 %
 % DEPENDENCIES:
@@ -57,15 +55,10 @@ function [Y,t] = threshold(varargin)
 obj = struct('data',false,'threshold_method','iqr','threshold_value',0.90,'threshold_plot',false);
 obj = fws.defaults(obj, varargin);
 
-% Catch if data is missing
 if numel(obj.data)==1
     error('No data to threshold in obj.data')
 end
-
-% Find voxels that aren't NaN or equal to 0
 data = obj.data(~isnan(obj.data)&obj.data~=0);
-
-% Define threshold value, t, by the requested method
 switch obj.threshold_method
     case 'iqr'; t = quantile(data,obj.threshold_value); 
     case 'pareto'; [~,t] = boundary(paretotails(data,0.0,1-obj.threshold_value));
@@ -73,11 +66,10 @@ switch obj.threshold_method
     otherwise
 end
 
-% Threshold volume
 Y=obj.data;
 Y(abs(Y)<t)=NaN;
 
-% Plot un/thresholded distributions, if requested. 
+
 if obj.threshold_plot
     figure(); hold on;
         histogram(obj.data);

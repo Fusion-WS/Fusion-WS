@@ -44,6 +44,7 @@ function [D] = folder(id,inDir,folders)
 % along with C^3NL Pipeline.If not, see <http://www.gnu.org/licenses/>.
 %------------- BEGIN CODE --------------
 %
+
 if ~(exist(inDir,'dir'));mkdir(inDir);end
    
 if exist('folders','var')

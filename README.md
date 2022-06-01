@@ -17,7 +17,7 @@ statistics_toolbox
 <br>
 
 ## Installation & Demo
-Download and unzip into your Matlab path. 
+Download, unzip and add the `matlab-fws` directory to your Matlab path. 
 <br>
 
 The default workflow is called with `fws.generate_ROI.m` and will run the watershed ROI creation using an fMRI task activation map of the multiple-demand cortex<sup>2</sup>. An interactive GUI will be generated to visualise the input map alongside a 3D render of the ROIs and some basic summaries of the ROI volume and peak voxel magnitudes. The demo can be simply called by:
@@ -31,7 +31,7 @@ fws.generate_ROI("demo")
 # Using your own data
 Simply provide a valid pathname to a `.nii` or `.nii.gz` file to the `fws.generate_ROI.m` function:
 ```
-fws.generate_ROI("path/to/my_fMRI_activation_map.nii")
+fws.generate_ROI("path/to/my_fMRI_activation_map.nii");
 ```
 <br>
 
@@ -45,7 +45,7 @@ There are 3 key parameters that influence each stage of the Fusion-WS clustering
 <br>These parameters can be altered, e.g.: 
 
 ```
-fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "filter", 300, "radius", 1, "merge", 100)
+obj = fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "filter", 300, "radius", 1, "merge", 100)
 ```
 
 ## Default workflow
@@ -87,7 +87,6 @@ The `Export` button saves a `.nii.gz` ROI label map and a `.csv` file of the ana
 
 ![](images/ROIS.png)<br>
 
-## Other Fusion-WS parameters
 
 ### References
 1. Meyer, F. and Beucher, S., 1990. Morphological segmentation. Journal of visual communication and image representation, 1(1), pp.21-46.

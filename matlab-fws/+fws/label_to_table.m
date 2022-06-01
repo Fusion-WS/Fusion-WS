@@ -92,7 +92,7 @@ end
 
 T = table();
 if obj.verbose; tc=tic; end
-for ii=id(2:end)' % Skipping 0's
+for ii=id(id>0)'%id(2:end)' % Skipping 0's
     tmp = table();
     tmp.ROIid = ii;
     

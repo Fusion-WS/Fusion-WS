@@ -117,9 +117,6 @@ end
 
 %% PREPROCESS VOLUME
 
-% Catch for FSL images
-obj.volume(obj.volume == 0) = NaN;
-
 % Infer properties of the input
 obj.K = fws.volume_kind(obj.volume,obj.tail); 
 

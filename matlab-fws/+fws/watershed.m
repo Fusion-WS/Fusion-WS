@@ -69,7 +69,7 @@ obj = fws.defaults(obj, varargin);
 CC = fws.cc_exclude(Y, obj.filter);
 
 tc=tic;
-% Cluster the volume to indpeendet parcels using watershed 
+% Cluster the volume to indpendent parcels using watershed 
 L = fws.cluster(Y,CC,obj);
 
 % If user defines a lower limit, merge small parcels with nearest cluster

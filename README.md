@@ -49,7 +49,7 @@ fws.generate_ROI("path/to/my_fMRI_activation_map.nii", "filter", 300, "radius", 
 ```
 
 ## Default workflow
-![](workflow.png)<br>
+![](images/workflow.png)<br>
 
 ### 1. Preprocessing
 For best results, we recommend using a 3D fMRI task-activation input map that has been registered to MNI space, statistically thresholded and/or corrected for multiple comparisons. The first stage of the default workflow checks for this and other properties. An internal IQR thresholding is applied to unthresholded input maps to retain the top 10% of voxels. 
@@ -69,7 +69,7 @@ For parametric maps, the following procedure is applied to each tail of the inpu
 
 <br>3. A final step is applied to combine neighbouring ROIs, within a component, if an ROI has a volume that is below the `merge` parameter.<br>
 
-![](watershed_algorithm.png)<br>
+![](images/watershed_algorithm.png)<br>
 
 
 ### 3. Anatomical labelling
@@ -77,7 +77,7 @@ The `fws.label_to_tabel.m` function is the unsung hero of the Fusion-WS toolbox.
 
 ### 4. ROI visualisation
 
-![](gui.png)<br>
+![](images/gui.png)<br>
 
 ## Other Fusion-WS parameters
 

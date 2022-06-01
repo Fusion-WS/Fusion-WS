@@ -73,14 +73,14 @@ For best results, we recommend using a 3D fMRI task-activation input map that ha
 - Threshold: Has the input map been thresholded? If not, `fws.threshold.m` is called to threshold the input map.
 
 ### 2. Watershed clustering
-For parametric maps, the following procedure is applied to each tail of the input map (positive/negative values):<br>
+For parametric maps, the following `fws.watershed.m` procedure is applied to each tail of the input map (positive/negative values):<br>
 <br>1. The thresholded input map is transformed into a connected component space using Matlab's `bwconncomp.m` function.<br>
-<br>2. Each component is segmented into ROIs using the watershed algorithm. Voxel magntidues are inverted, so that peaks became cathcment basins (CB), and rank-indexed. Voxels are then handled in 1 of 3 ways as the index is iterated through until all voxels have been labelled:<br>
+<br>2. Each component is segmented into ROIs using the watershed algorithm `fws.cluster.m`. Voxel magntidues are inverted, so that peaks became cathcment basins (CB), and rank-indexed. Voxels are then handled in 1 of 3 ways as the index is iterated through until all voxels have been labelled:<br>
 - *i*th voxel is assigned the proximal voxel's label if one already exists within the flooding `radius`.
 - If no labeled voxel is found then the *i*th voxel is assigned a unique label. 
 - A "winner-takes-all" is used to assign the *i*th voxel is multiple labels are found within the flooding `radius`.
 
-<br>3. A final step is applied to combine neighbouring ROIs, within a component, if an ROI has a volume that is below the `merge` parameter.<br>
+<br>3. A final step is applied using `fws.merge_neighbours.m` to combine neighbouring ROIs, within a component, if an ROI has a volume that is below the `merge` parameter.<br>
 
 <p align="center">
   <img src="images/watershed_algorithm.png" alt="drawing" width="800"/>

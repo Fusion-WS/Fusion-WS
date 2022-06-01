@@ -8,7 +8,7 @@ The current Fusion-WS toolbox is implemented in `Matlab`.
 <br>
 
 ## Matlab versions & toolboxes
-Fusion-WS has been tested on Matlab 2018 & up. Fusion-WS assumes the following Matlab toolboxes are installed and in your path:
+Fusion-WS has been tested on Matlab 2018 & up and assumes that the following Matlab toolboxes are installed and in your path:
 ```
 image_toolbox
 signal_toolbox
@@ -77,6 +77,7 @@ The `fws.label_to_tabel.m` function is the unsung hero of the Fusion-WS toolbox.
 
 ### 4. ROI visualisation
 
+![](gui.png)<br>
 
 ## Other Fusion-WS parameters
 

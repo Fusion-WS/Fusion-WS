@@ -69,13 +69,16 @@ For parametric maps, the following procedure is applied to each tail of the inpu
 
 <br>3. A final step is applied to combine neighbouring ROIs, within a component, if an ROI has a volume that is below the `merge` parameter.<br>
 
-![](images/watershed_algorithm.png)<br>
+<p align="center">
+  <img src="images/watershed_algorithm.png" alt="drawing" width="800"/>
+</p>
 
 
 ### 3. Anatomical labelling
 The `fws.label_to_tabel.m` function is the unsung hero of the Fusion-WS toolbox. Label_to_table is an automated ROI labelling system that speeds up the process of reporting ROI characteristics. A table of labels is generated using a set of publically available atlases to assign anatomical and functional labels to each ROI. We assume that the input map has been registered to MNI space but the atlases are resampled (via `fws.interpolator.m`) to match the input map grid resolution.
 
 ### 4. ROI visualisation
+The default workflow generates an interactive figure to allow a visual inspection of input map and the ROIs in 3D space. The top banner contains input fields where Fusion-WS can be re-run with new parameters after clicking the `Re-apply` button.<br>
 
 ![](images/gui.png)<br>
 
